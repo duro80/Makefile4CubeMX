@@ -1,0 +1,6 @@
+#!/bin/bash
+
+APP_FILE=/usr/bin/CubeMX2Makefile.py
+if [ ! -f $APP_FILE ] ; then
+	ln -s "$PWD"/CubeMX2Makefile.py $APP_FILE
+fi
