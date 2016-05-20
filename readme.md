@@ -16,7 +16,7 @@ Changes and Improvements:
  - create project file for Code::Blocks
 
 ## Instalation
-	sudo ln -s "$PWD"/CubeMX2Makefile.py /usr/bin/CubeMX2Makefile.py
+	sudo ./install
 
 ## Dependencies
  - flashing tool "st-flash" - https://github.com/texane/stlink
