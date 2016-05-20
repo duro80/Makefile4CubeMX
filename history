@@ -1,0 +1,46 @@
+Date: 16/03/2016
+
+Version: 1.3.0
+
+ - New
+ 	- add Debug support for st-util app (github texane/stlink)
+ 	- Automatic debug build
+ - How to use Debug mode:
+ 	- in terminal run: st-util
+ 	- in C::B, choose "Debug" build target
+ 	- rebuild project
+ 	- run Debug (F8)
+ - Remove
+ 	- remove build option from command line. The buld option is dona automaticaly by Makefile (make Debug or make Release).
+
+----------------------------
+
+Date: 13/02/2016
+
+Version: 1.2.0
+
+ - Fix
+ 	- correct mcpu flag with STM32L0 MCU
+ 	- add correct settings flag __weak and __packed from SW4STM32 project file
+ - Add size reducing flags in makefile: nano.specs, nosys.specs
+ - add code generation for debugging in Code::Blocks IDE project
+
+----------------------------
+
+Date: 07/02/2016
+
+Version: 1.1.0
+
+ - add commandline switches:
+ 	- build=Debug/Release : For debugging purpose
+ 	- opt=0/1/2/s : for code optimalization
+ - support code generation from Middleware folder (from ST examples), 
+ - add code generation for debugging in Code::Blocks IDE project
+
+----------------------------
+
+Date: 01/11/2015
+
+Version: 1.0.0
+
+original work: https://github.com/baoshi/CubeMX2Makefile
