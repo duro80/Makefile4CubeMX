@@ -10,7 +10,7 @@ Date: 16/03/2016
 
 Changes and Improvements:
 
- - support only SW4STM32 projects, because there is bug in generation code for TrueStudio in Linux
+ - support only SW4STM32 projects, because there is (was) bug in generation code for TrueStudio in Linux
  - add all .c files in Src directory into project and Makefile
  - makefile is prepared for Code::Blocks IDE (flashing bin program after compile)
  - create project file for Code::Blocks
@@ -24,7 +24,12 @@ Changes and Improvements:
  - libnewlib-arm-none-eabi
 
 ## Usage
-	CubeMX2Makefile.py <path_to_cube_project> -opt={0|1|2|s}
+	CubeMX2Makefile.py <path_to_cube_project> [-opt={0|1|2|s}]
+
+Example of use: open terminal in directory, where CubeMX generated the SW4STM32 project:
+	CubeMX2Makefile.py .	
+
+You can overwrtie default setting by editing local.settings file. See the local.setting file for details.
 
 ### Usage of generated Makefile
 - "make" : compile, build and flash program to MCU

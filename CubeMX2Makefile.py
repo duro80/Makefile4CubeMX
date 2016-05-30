@@ -7,6 +7,7 @@ import os.path
 from string import Template
 from xml.etree import ElementTree as ET
 import subprocess
+import os
 
 C2M_ERR_SUCCESS             =  0
 C2M_ERR_INVALID_COMMANDLINE = -1
@@ -26,6 +27,56 @@ mcu_cflags[re.compile('STM32(F|L)3')] = '-mthumb -mcpu=cortex-m4 -mfpu=fpv4-sp-d
 mcu_cflags[re.compile('STM32(F|L)4')] = '-mthumb -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=softfp'
 mcu_cflags[re.compile('STM32(F|L)7')] = '-mthumb -mcpu=cortex-m7 -mfpu=fpv5-sp-d16 -mfloat-abi=softfp'
 
+workdir =  os.path.dirname(os.path.realpath(__file__))
+file_local_settings =workdir+"/local.settings"
+localSetting={}
+localSetting["GCC_PATH"]="/usr/bin/"
+localSetting["FLASH_PATH"]="/usr/local/bin/st-flash"
+localSetting["GDB_IP_PORT"]="4242"
+localSetting["GDP_IP_ADDRESS"]="localhost"
+
+try:
+    hfile = open(file_local_settings,"r")
+    lines = hfile.readlines()
+    for line in lines:
+        line = line.strip()
+        if len(line)>0:
+            if line[0]=='#':
+                continue
+            v1,v2 = line.split("=")
+            v1 = v1.strip()
+            v2 = v2.strip()
+            localSetting[v1]=v2
+    hfile.close()
+except:
+    sys.stderr.write("No or damaged config file. Default settings will be used\r\n")
+    sys.stderr.write("---------------------------------------------\r\n")
+    try:
+        hfile = open(file_local_settings,"w")
+        hfile.write("# local configuration for CubeMX2Makefile.py script\r\n")
+        hfile.write("#\r\n")
+        hfile.write("#------------------------------------------------------------------------------------\r\n")
+        hfile.write("# uncomments the required local settings\r\n")
+        hfile.write("# supported config are:\r\n")
+        hfile.write("#	- GCC_PATH		: specifies the path to gcc toolchain\r\n")
+        hfile.write("#	- FLASH_PATH	: specifies the path to stlink utility\r\n")
+        hfile.write("#	- GDB_IP_PORT	: specifies the port to GDB server. Default is 4242\r\n")
+        hfile.write("#	- GDP_IP_ADDRESS: specifies the address to GDB server. Default is localhost\r\n")
+        hfile.write("#------------------------------------------------------------------------------------\r\n")
+        hfile.write("\r\n")
+        hfile.write("# Part 1: MAKEFILE\r\n")
+        hfile.write("#GCC_PATH = \r\n")
+        hfile.write("#FLASH_PATH =\r\n")
+        hfile.write("\r\n")
+        hfile.write("#------------------------------------------------------------------------------------\r\n")
+        hfile.write("\r\n")
+        hfile.write("# Part 2: Code::Blocks IDE\r\n")
+        hfile.write("#GDB_IP_PORT = 4242\r\n")
+        hfile.write("#GDP_IP_ADDRESS = localhost\r\n")
+    except Exception, e:
+        print e
+#print localSetting
+
 if len(sys.argv) < 2:
     sys.stderr.write("\r\nSTM32CubeMX project to Makefile v1.0\r\n")
     sys.stderr.write("-==================================-\r\n")
@@ -36,7 +87,7 @@ if len(sys.argv) < 2:
     sys.stderr.write("Usage:\r\n")
     sys.stderr.write("  CubeMX2Makefile.py <STM32CubeMX \"Toolchain Folder Location\">  [-opt={0|1|2|s}\r\n")
     sys.stderr.write("  Default values:\r\n")
-    sys.stderr.write("      opt = 2 (-O2 optimalizaiont\r\n")
+    sys.stderr.write("      opt = 2 (-O2 optimalization)\r\n")
     sys.stderr.write("\r\nMakefile usage:\r\n")
     sys.stderr.write("Build project\r\n")
     sys.stderr.write("\tmake\r\n")
@@ -66,7 +117,7 @@ if len(sys.argv) >= 3:
 #    print "Debug"
 #else:
 #    print "Release"
-    
+
 print "Code optimalization:\t",flag_opt
     
 if os.path.islink(sys.argv[0]):
@@ -77,10 +128,12 @@ try:
     fd = open(app_folder + os.path.sep + 'CubeMX2Makefile.tpl', 'rb')
     mft = Template(fd.read())
     fd.close()
-except:
+except Exception, e:
     sys.stderr.write("Unable to load template file CubeMX2Makefile.tpl\r\n")
+    sys.stderr.write(e)
     sys.exit(C2M_ERR_LOAD_TEMPLATE)
 
+'''
 try:
     fd = open(app_folder + os.path.sep + 'CubeMX2Makefile.tpl', 'rb')
     #check st-flash program exists
@@ -94,8 +147,10 @@ try:
 except:
     sys.stderr.write("Unable to load template file CubeMX2Makefile.tpl\r\n")
     sys.exit(C2M_ERR_LOAD_TEMPLATE)
-   
-if not os.path.isfile(flashPath):
+'''
+flash = localSetting["FLASH_PATH"].strip()
+#if not os.path.isfile(flashPath):
+if not os.path.isfile(flash):
     sys.stderr.write("---------------------WARNING----------------\r\n")
     sys.stderr.write("|- - - - - - - - - - - - - - - - - - - - - -|\r\n")
     sys.stderr.write("|    st-flash utility is not installed.     |\r\n")
@@ -260,8 +315,6 @@ if os.path.exists(fulldir):
                 if "GCC" in subor:
                     lib_sources += ' \\\n  ' + subor
 
-
-
 # MCU
 mcu = ''
 #node = root.find('.//toolChain[@superClass="fr.ac6.managedbuild.toolchain.gnu.cross.exe.release"]/option[@name="Mcu"]')
@@ -327,7 +380,7 @@ for node in nodes:
             first = 0
         else:
             c_includes += '\nC_INCLUDES += -I' + value
-            
+
 hdirs = set()
 fulldir=os.path.join(proj_folder,"Middlewares")
 if os.path.exists(fulldir):
@@ -346,7 +399,7 @@ if os.path.exists(fulldir):
     for hdir in hdirs:
         c_includes += '\nC_INCLUDES += -I' + hdir
         print hdir
-        
+
 fulldir=os.path.join(proj_folder,"Drivers")
 fulldir=os.path.join(fulldir,"BSP")
 hdirs = set()
@@ -399,6 +452,8 @@ ld_script = "\""+proj_folder_rel_path + os.path.sep + ldscript+"\""
 #print "LD_SCRIPT=", ld_script
 
 mf = mft.substitute( \
+    GCC_PATH_VAR = localSetting["GCC_PATH"], \
+    FLASH_PATH_VAR = localSetting["FLASH_PATH"], \
     TARGET = proj_name, \
     MCU = mcu, \
     C_SOURCES = c_sources, \
@@ -519,10 +574,11 @@ try:
     fd.write('<debugger>\n')
     fd.write('  <search_path add="./build" />\n')
     fd.write('  <remote_debugging>\n')
-    fd.write('      <options conn_type="0" serial_baud="115200" ip_address="localhost" ip_port="4242" additional_cmds="reset" />\n')
+    fd.write('      <options conn_type="0" serial_baud="115200" ip_address="%s" ip_port="%s" additional_cmds="reset" />\n'%(localSetting["GDP_IP_ADDRESS"], localSetting["GDB_IP_PORT"]))
     fd.write('  </remote_debugging>\n')
     fd.write('  <remote_debugging target="Debug">\n')
-    fd.write('      <options conn_type="0" serial_baud="115200" ip_address="localhost" ip_port="4242" additional_cmds="monitor reset init&#x0A;monitor halt&#x0A;monitor soft_reset_halt&#x0A;file ./build/'+proj_name+'.elf&#x0A;load&#x0A;monitor_soft_reset_halt" extended_remote="1" />\n')
+    fd.write('      <options conn_type="0" serial_baud="115200" ip_address="%s" ip_port="%s" additional_cmds="monitor reset init&#x0A;monitor halt&#x0A;monitor soft_reset_halt&#x0A;'%(localSetting["GDP_IP_ADDRESS"], localSetting["GDB_IP_PORT"]))
+    fd.write('file ./build/'+proj_name+'.elf&#x0A;load&#x0A;monitor_soft_reset_halt" extended_remote="1" />\n')
     fd.write('  </remote_debugging>\n')
     fd.write('</debugger>\n')
     fd.write('<lib_finder disable_auto="1" />\n')

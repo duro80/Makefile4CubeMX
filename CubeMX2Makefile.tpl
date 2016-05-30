@@ -2,10 +2,9 @@
 # Makefile by CubeMX2Makefile.py
 ########################################################
 # Path to gcc
-GCC_PATH = /usr/bin/
-#GCC_PATH = /home/juraj/Programy/arm_compiler5/bin/
+GCC_PATH = $GCC_PATH_VAR
 # Path to st-flash tool
-FLASH_PATH = /usr/local/bin/st-flash
+FLASH_PATH = $FLASH_PATH_VAR
 
 ########################################################
 # target
