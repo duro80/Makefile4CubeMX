@@ -74,8 +74,9 @@ except:
         hfile.write("#GDB_IP_PORT = 4242\r\n")
         hfile.write("#GDP_IP_ADDRESS = localhost\r\n")
     except Exception, e:
-        print e
-#print localSetting
+        sys.stderr.write(e)
+        sys.stderr.write("Error create local.settings file")
+        
 
 if len(sys.argv) < 2:
     sys.stderr.write("\r\nSTM32CubeMX project to Makefile v1.0\r\n")

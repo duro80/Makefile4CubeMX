@@ -27,6 +27,7 @@ Changes and Improvements:
 	CubeMX2Makefile.py <path_to_cube_project> [-opt={0|1|2|s}]
 
 Example of use: open terminal in directory, where CubeMX generated the SW4STM32 project:
+	
 	CubeMX2Makefile.py .	
 
 You can overwrtie default setting by editing local.settings file. See the local.setting file for details.
