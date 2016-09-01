@@ -76,7 +76,7 @@ except:
     except Exception, e:
         sys.stderr.write(e)
         sys.stderr.write("Error create local.settings file")
-        
+
 
 if len(sys.argv) < 2:
     sys.stderr.write("\r\nSTM32CubeMX project to Makefile v1.0\r\n")
@@ -120,7 +120,7 @@ if len(sys.argv) >= 3:
 #    print "Release"
 
 print "Code optimalization:\t",flag_opt
-    
+
 if os.path.islink(sys.argv[0]):
     app_folder = os.path.realpath(sys.argv[0])
     app_folder = os.path.dirname(app_folder)
@@ -220,6 +220,7 @@ print "TARGET:\t\t\t", proj_name
 
 nodes = rootProject.findall('linkedResources/link[type=\'1\']/location')
 sources = []
+sources_set = []
 for node in nodes:
     # uprava - syscalls nebude v zdrojakoch
     if node.text.find("syscalls.c")>0:
@@ -234,7 +235,10 @@ for node in nodes:
     elif node.text.startswith("PARENT-5-PROJECT_LOC"):
         rep = re.sub(r'^PARENT-5-PROJECT_LOC/', '', node.text)
     if rep!='':
-        sources.append(rep)
+        curr_file = rep.split('/')[-1]
+        if not curr_file in sources_set:    #eliminate duplicit files in .project
+            sources.append(rep)
+            sources_set.append(curr_file)
 
 sources = list(set(sources))
 sources.sort()
@@ -277,7 +281,7 @@ try:
 except Exception, e:
     sys.stderr.write("Error: cannot parse SW4STM32 .cproject file: %s\r\n" % ts_cproject)
     sys.exit(C2M_ERR_PROJECT_FILE)
-    
+
 # Middleware directory
 #src_middleware_files=[]
 fulldir=os.path.join(proj_folder,"Middlewares")
@@ -299,7 +303,7 @@ if os.path.exists(fulldir):
 fulldir=os.path.join(proj_folder,"Drivers")
 fulldir=os.path.join(fulldir,"BSP")
 if os.path.exists(fulldir):
-    print "------BSP------", 
+    print "------BSP------",
     lbf = len(proj_folder)+1
     for koren, subFolders, files in os.walk(fulldir):
         for subor in files:
@@ -310,7 +314,7 @@ if os.path.exists(fulldir):
                 c_src_file = c_src_file[lbf:]
                 c_sources_list.append(c_src_file)
                 c_sources += ' \\\n  ' + c_src_file
-                
+
 
     for koren, subFolders, files in os.walk(fulldir):
         for subor in files:
@@ -398,7 +402,7 @@ if os.path.exists(fulldir):
                 subor = sbr[lbf:]
                 c_sources_list.append(subor)
                 #break
-                
+
     for hdir in hdirs:
         c_includes += '\nC_INCLUDES += -I' + hdir
         #print hdir
@@ -417,7 +421,7 @@ if os.path.exists(fulldir):
                 sbr = os.path.join(koren,subor)
                 subor = sbr[lbf:]
                 c_sources_list.append(subor)
-                
+
                 #c_src_file = os.path.join(koren,subor)
                 #c_src_file = c_src_file[lbf:]
                 #hdirs.add(h_dir)
@@ -553,7 +557,7 @@ try:
     fd.write('\t</Target>\n')
     fd.write('</Build>\n')
     fd.write('\n')
-    
+
     abp = sys.argv[1] #os.path.abspath(os.curdir)
     for inc_file in inc_files:
         # delete pattern '..\' from beginging of path
@@ -565,12 +569,12 @@ try:
             isf = abp+os.path.sep+inc_file+os.path.sep+name
             if os.path.isfile(isf):
                 fd.write('<Unit filename="'+inc_file+os.path.sep+name+'"/>\n')
-    
+
     inc_filesX = "Drivers/STM32F0xx_HAL_Driver/Src/"
     for name in c_sources_list:
         #print "write", name
         fd.write('<Unit filename="'+name+'"><Option compilerVar="CC" /></Unit>\n')
-    #debugger session    
+    #debugger session
     fd.write('<Extensions>\n')
     fd.write('<envvars />\n')
     fd.write('<code_completion />\n')
@@ -586,7 +590,7 @@ try:
     fd.write('</debugger>\n')
     fd.write('<lib_finder disable_auto="1" />\n')
     fd.write('</Extensions>\n')
-    
+
     fd.write('</Project>\n')
     fd.write('</CodeBlocks_project_file>\n')
     fd.close()
