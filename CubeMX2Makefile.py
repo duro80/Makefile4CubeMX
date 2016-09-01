@@ -246,8 +246,8 @@ for source in sources:
     #print source
     ext = os.path.splitext(source)[1]
     if ext == '.c':
-        c_sources += ' \\\n  ' + source
-        c_sources_list.append(source)
+		c_sources += ' \\\n  ' + source
+		c_sources_list.append(source)
     elif ext == '.s':
         asm_sources = asm_sources + ' \\\n  ' + source
     else:
@@ -280,18 +280,20 @@ except Exception, e:
     
 # Middleware directory
 #src_middleware_files=[]
-
 fulldir=os.path.join(proj_folder,"Middlewares")
 if os.path.exists(fulldir):
-    print "------MIDDLEWARE------"
+    #print "------MIDDLEWARE------"
     lbf = len(proj_folder)+1
     for koren, subFolders, files in os.walk(fulldir):
         for subor in files:
             if ".c" in subor:
+                if subor.find("template",0) >=0:
+                    continue
                 c_src_file = os.path.join(koren,subor)
                 c_src_file = c_src_file[lbf:]
-                c_sources_list.append(c_src_file)
-                c_sources += ' \\\n  ' + c_src_file
+                if c_src_file not in c_sources_list:
+					c_sources_list.append(c_src_file)
+					c_sources += ' \\\n  ' + c_src_file
 
 
 fulldir=os.path.join(proj_folder,"Drivers")
@@ -385,7 +387,7 @@ for node in nodes:
 hdirs = set()
 fulldir=os.path.join(proj_folder,"Middlewares")
 if os.path.exists(fulldir):
-    print "---MIDDLEWARE----Headers-----"
+    #print "---MIDDLEWARE----Headers-----"
     for koren, subFolders, files in os.walk(fulldir):
         for subor in files:
             extension = subor.split('.')[1]
@@ -399,7 +401,7 @@ if os.path.exists(fulldir):
                 
     for hdir in hdirs:
         c_includes += '\nC_INCLUDES += -I' + hdir
-        print hdir
+        #print hdir
 
 fulldir=os.path.join(proj_folder,"Drivers")
 fulldir=os.path.join(fulldir,"BSP")
