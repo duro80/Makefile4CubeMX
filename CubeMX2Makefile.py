@@ -239,7 +239,6 @@ for node in nodes:
         if not curr_file in sources_set:    #eliminate duplicit files in .project
             sources.append(rep)
             sources_set.append(curr_file)
-
 sources = list(set(sources))
 sources.sort()
 c_sources = 'C_SOURCES ='
@@ -247,7 +246,6 @@ asm_sources = 'ASM_SOURCES ='
 lib_sources = 'LIB_SOURCES ='
 c_sources_list=[]
 for source in sources:
-    #print source
     ext = os.path.splitext(source)[1]
     if ext == '.c':
 		c_sources += ' \\\n  ' + source
@@ -273,7 +271,6 @@ for usr_src in src_files:
     if isInList==False:
         c_sources_list.append("Src/"+usr_src)
         c_sources += ' \\\n  ' + "Src/"+usr_src
-#print c_sources
 # .cproject file
 try:
     tree = ET.parse(ts_cproject)
@@ -440,7 +437,10 @@ nodes = root.findall('.//toolChain[@superClass="fr.ac6.managedbuild.toolchain.gn
 for node in nodes:
     value = node.attrib.get('value')
     if (value != ""):
-        #if value[0]!="_":
+        if value.find("=")>=0:
+            casti = value.split("=")
+            if casti[0] in c_defs and casti[1] in c_defs:
+                continue
         c_defs += ' -D' + value
 #print c_defs
 # Link script
