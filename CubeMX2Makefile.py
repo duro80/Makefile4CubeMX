@@ -248,8 +248,8 @@ c_sources_list=[]
 for source in sources:
     ext = os.path.splitext(source)[1]
     if ext == '.c':
-		c_sources += ' \\\n  ' + source
-		c_sources_list.append(source)
+        c_sources += ' \\\n  ' + source
+        c_sources_list.append(source)
     elif ext == '.s':
         asm_sources = asm_sources + ' \\\n  ' + source
     else:
@@ -441,6 +441,9 @@ for node in nodes:
             casti = value.split("=")
             if casti[0] in c_defs and casti[1] in c_defs:
                 continue
+            # determine if C_DEFS parameters are encloed in '"'
+            if casti[1][0]!='\"':
+                value  = casti[0]+'=\"'+casti[1]+'\"'
         c_defs += ' -D' + value
 #print c_defs
 # Link script
