@@ -14,6 +14,7 @@ Changes and Improvements:
  - add all .c files in Src directory into project and Makefile
  - makefile is prepared for Code::Blocks IDE (flashing bin program after compile)
  - create project file for Code::Blocks
+ - support of user defined preprocessor directives
 
 ## Instalation
 	sudo ./install
@@ -24,6 +25,14 @@ Changes and Improvements:
  - libnewlib-arm-none-eabi
 
 ## Usage
+ The script look for make_args (located in project direcory) where is predefined preprocessor directives. Syntax for this file:
+   +DIRECTIVE_NAME
+   =DIRECTIVE_VALUE1 
+   =DIRECTIVE_VALUE2
+
+  In version 1.5.0, the C_DEFS is only supported
+
+  Useage:
 	CubeMX2Makefile.py <path_to_cube_project> [-opt={0|1|2|s}]
 
 Example of use: open terminal in directory, where CubeMX generated the SW4STM32 project:

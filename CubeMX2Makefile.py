@@ -9,6 +9,8 @@ from xml.etree import ElementTree as ET
 import subprocess
 import os
 
+VERSION = "1.5.0"
+
 C2M_ERR_SUCCESS             =  0
 C2M_ERR_INVALID_COMMANDLINE = -1
 C2M_ERR_LOAD_TEMPLATE       = -2
@@ -118,7 +120,8 @@ if len(sys.argv) >= 3:
 #    print "Debug"
 #else:
 #    print "Release"
-
+print "-== CubeMX2Makefile ==-"
+print "version:", VERSION
 print "Code optimalization:\t",flag_opt
 
 if os.path.islink(sys.argv[0]):
@@ -293,8 +296,8 @@ if os.path.exists(fulldir):
                 c_src_file = os.path.join(koren,subor)
                 c_src_file = c_src_file[lbf:]
                 if c_src_file not in c_sources_list:
-					c_sources_list.append(c_src_file)
-					c_sources += ' \\\n  ' + c_src_file
+                    c_sources_list.append(c_src_file)
+                    c_sources += ' \\\n  ' + c_src_file
 
 
 fulldir=os.path.join(proj_folder,"Drivers")
@@ -430,7 +433,26 @@ if os.path.exists(fulldir):
 
 #print c_includes
 # C symbols
-c_defs = 'C_DEFS = '
+make_args = proj_folder + os.path.sep + "make_args"
+if os.path.exists(make_args):
+    hfile = open(make_args,"r")
+    lines = hfile.readlines()
+    plusCmd = ""
+    c_defs = 'C_DEFS = '
+    for line in lines:
+        line = line.strip()
+        if line[0] == "=":
+            plusCmd = line[1:]
+        plusArg = ""
+        if plusCmd != "":
+            if line[0] == "+":
+                plusArg = line[1:]
+                if plusCmd == "C_DEFS":
+                    c_defs += ' -D' + plusArg
+        
+    print "Additional prepocesor symbols (C_DEFS):\n\t",c_defs
+else:
+    c_defs = 'C_DEFS = '
 #                                                                            nodes = root.findall('.//tool[@superClass="com.atollic.truestudio.exe.debug.toolchain.gcc"]/option[@valueType="definedSymbols"]/listOptionValue')
 #nodes = root.findall('.//toolChain[@superClass="fr.ac6.managedbuild.toolchain.gnu.cross.exe.release"]/tool[@superClass="fr.ac6.managedbuild.tool.gnu.cross.c.compiler"]/option[@valueType="definedSymbols"]/listOptionValue')
 nodes = root.findall('.//toolChain[@superClass="fr.ac6.managedbuild.toolchain.gnu.cross.exe.debug"]/tool[@superClass="fr.ac6.managedbuild.tool.gnu.cross.c.compiler"]/option[@valueType="definedSymbols"]/listOptionValue')

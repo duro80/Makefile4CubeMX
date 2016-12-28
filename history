@@ -1,3 +1,12 @@
+Date: 30/12/2016
+
+Version: 1.5.0
+
+ - New
+ 	- check for make_args file in project directory to preset preprocessor directives 
+ 	- Add version info to script
+----------------------------
+
 Date: 30/05/2016
 
 Version: 1.4.0
