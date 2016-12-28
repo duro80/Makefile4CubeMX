@@ -26,9 +26,9 @@ Changes and Improvements:
 
 ## Usage
  The script look for make_args (located in project direcory) where is predefined preprocessor directives. Syntax for this file:
-   +DIRECTIVE_NAME
-   =DIRECTIVE_VALUE1 
-   =DIRECTIVE_VALUE2
+   =DIRECTIVE_NAME
+   +DIRECTIVE_VALUE1 
+   +DIRECTIVE_VALUE2
 
   In version 1.5.0, the C_DEFS is only supported
 
