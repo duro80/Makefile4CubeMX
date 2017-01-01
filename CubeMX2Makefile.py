@@ -9,7 +9,7 @@ from xml.etree import ElementTree as ET
 import subprocess
 import os
 
-VERSION = "1.5.0"
+VERSION = "1.5.1"
 
 C2M_ERR_SUCCESS             =  0
 C2M_ERR_INVALID_COMMANDLINE = -1
@@ -439,6 +439,7 @@ if os.path.exists(make_args):
     lines = hfile.readlines()
     plusCmd = ""
     c_defs = 'C_DEFS = '
+    cc_libs = ""
     for line in lines:
         line = line.strip()
         if line[0] == "=":
@@ -449,10 +450,17 @@ if os.path.exists(make_args):
                 plusArg = line[1:]
                 if plusCmd == "C_DEFS":
                     c_defs += ' -D' + plusArg
+                if plusCmd == "LIBS":
+                    cc_libs += ' -' + plusArg
         
-    print "Additional prepocesor symbols (C_DEFS):\n\t",c_defs
+    print "\nAdditional prepocesor symbols"
+    if(len(c_defs)>0):
+        print "(C_DEFS):\t",c_defs
+    if(len(cc_libs)>0):
+        print "(LIBS):\t",cc_libs
 else:
     c_defs = 'C_DEFS = '
+    cc_libs = ""
 #                                                                            nodes = root.findall('.//tool[@superClass="com.atollic.truestudio.exe.debug.toolchain.gcc"]/option[@valueType="definedSymbols"]/listOptionValue')
 #nodes = root.findall('.//toolChain[@superClass="fr.ac6.managedbuild.toolchain.gnu.cross.exe.release"]/tool[@superClass="fr.ac6.managedbuild.tool.gnu.cross.c.compiler"]/option[@valueType="definedSymbols"]/listOptionValue')
 nodes = root.findall('.//toolChain[@superClass="fr.ac6.managedbuild.toolchain.gnu.cross.exe.debug"]/tool[@superClass="fr.ac6.managedbuild.tool.gnu.cross.c.compiler"]/option[@valueType="definedSymbols"]/listOptionValue')
@@ -495,6 +503,7 @@ mf = mft.substitute( \
     C_DEFS = c_defs, \
     LD_SCRIPT = ld_script, \
     C_INCLUDES = c_includes,\
+    CC_LIBS = cc_libs,\
     CODE_OPTIMALIZATION = flag_opt)
 
 try:

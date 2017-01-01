@@ -1,3 +1,12 @@
+Date: 1/1/2017
+
+Version: 1.5.1
+
+ - New
+ 	- Add LIBS user libraries in make_args file.
+ 	- Add version info to script
+----------------------------
+
 Date: 30/12/2016
 
 Version: 1.5.0

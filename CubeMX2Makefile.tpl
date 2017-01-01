@@ -65,6 +65,7 @@ CFLAGS += -MD -MP -MF .dep/$$(@F).d
 LDSCRIPT = $LD_SCRIPT
 # libraries
 LIBS = -lc -lm -lnosys
+LIBS += $CC_LIBS
 LIBDIR =
 CC_VER := $$(shell $$(CC) -dumpversion)
 ifeq "$$(CC_VER)" "4.8.2"

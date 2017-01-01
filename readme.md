@@ -30,10 +30,20 @@ Changes and Improvements:
    +DIRECTIVE_VALUE1 
    +DIRECTIVE_VALUE2
 
-  In version 1.5.0, the C_DEFS is only supported
+  In version 1.5.1, are supported:
+   * C_DEFS (to add some definitions to compiler)
+   * LIBS (to link precompiled libraries)
 
   Useage:
 	CubeMX2Makefile.py <path_to_cube_project> [-opt={0|1|2|s}]
+
+  Example of make_args file:
+    =C_DEFS
+    +MY_OWN_DIRECTIVE
+    +LIBRARY_VERSION=1.5.0
+    =LIBS
+    +LMiddlewares/mpl
+    +llibmplmpu
 
 Example of use: open terminal in directory, where CubeMX generated the SW4STM32 project:
 	
