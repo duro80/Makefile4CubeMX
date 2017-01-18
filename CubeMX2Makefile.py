@@ -179,22 +179,30 @@ if not os.path.isdir(proj_folder):
 
 #detection of multiple project in SW4STM32 folder
 n_projects=0
-for name in os.listdir(os.path.join(proj_folder,"SW4STM32")):
-    n_projects += 1
+projectDirectory=''
+for name0 in os.listdir(os.path.join(proj_folder,"SW4STM32")):
+    name1 = os.path.join(os.path.join(proj_folder,"SW4STM32"),name0)
+    if os.path.isdir(name1):
+        name = name1
+        n_projects += 1
 
-if n_projects ==1:
-    proj_folder_full_path = proj_folder + os.path.sep + 'SW4STM32' + os.path.sep + name
-    proj_folder_rel_path = 'SW4STM32' + os.path.sep + name
+if n_projects == 1:
+    proj_folder_full_path = proj_folder + os.path.sep + 'SW4STM32' + os.path.sep + os.path.basename(name)
+    proj_folder_rel_path = 'SW4STM32' + os.path.sep + os.path.basename(name)
+    projectDirectory = os.path.basename(name)
 else:
     print "In project directory are multiple projects."
     n_projects=1
     projects={}
-    for name in os.listdir(os.path.join(proj_folder,"SW4STM32")):
-        print n_projects,name
-        projects[n_projects]=name
-        n_projects+=1
+    for name0 in os.listdir(os.path.join(proj_folder,"SW4STM32")):
+        name = os.path.join(os.path.join(proj_folder,"SW4STM32"),name0)
+        if os.path.isdir(name):
+            print n_projects,name
+            projects[n_projects]=name
+            n_projects+=1
     sel_project = input("Select active project: ")
     name = projects[sel_project]
+    projectDirectory = os.path.basename(name)
     proj_folder_full_path = proj_folder + os.path.sep + 'SW4STM32' + os.path.sep + name
     proj_folder_rel_path = 'SW4STM32' + os.path.sep + name
 
@@ -202,7 +210,8 @@ ts_project = proj_folder_full_path + os.path.sep + '.project'
 ts_cproject = proj_folder_full_path + os.path.sep + '.cproject'
 #ts_project = proj_folder + os.path.sep + 'SW4STM32' + os.path.sep + proj_name + ' Configuration' + os.path.sep + '.project'
 #ts_cproject = proj_folder + os.path.sep + 'SW4STM32' + os.path.sep + proj_name + ' Configuration' + os.path.sep + '.cproject'
-
+print ts_project
+print os.path.exists(ts_project), os.path.exists(ts_cproject)
 if not (os.path.isfile(ts_project) and os.path.isfile(ts_cproject)):
     sys.stderr.write("SW4STM32 project not found, use STM32CubeMX to generate a SW4STM32 project first\r\n")
     sys.exit(C2M_ERR_NO_PROJECT)
@@ -230,7 +239,7 @@ for node in nodes:
         continue
     rep = ''
     if node.text.startswith("PARENT-1-PROJECT_LOC"):
-        rep = re.sub(r'^PARENT-1-PROJECT_LOC/', '', node.text)
+        rep = re.sub(r'^PARENT-1-PROJECT_LOC/', 'SW4STM32/', node.text)
     elif node.text.startswith("PARENT-2-PROJECT_LOC"):
         rep = re.sub(r'^PARENT-2-PROJECT_LOC/', '', node.text)
     elif node.text.startswith("PARENT-7-PROJECT_LOC"):
@@ -254,7 +263,7 @@ for source in sources:
         c_sources += ' \\\n  ' + source
         c_sources_list.append(source)
     elif ext == '.s':
-        asm_sources = asm_sources + ' \\\n  ' + source
+        asm_sources = asm_sources + ' \\\n  ' +  source
     else:
         #sys.stderr.write("Unknown source file type: %s\r\n" % source)
         #sys.exit(-5)
