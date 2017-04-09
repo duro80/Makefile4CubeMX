@@ -25,6 +25,17 @@ Changes and Improvements:
  - libnewlib-arm-none-eabi
 
 ## Usage
+Before using the script CubeMX2Makefile.py make sure the software STM32CubeMX are set these preferences:
+In Project/Settings:
+ - Toolchain IDE: SW4STM32
+ - Generate under root is unchecked
+ 
+Open terminal in directory, where CubeMX generated the SW4STM32 project:
+	
+	CubeMX2Makefile.py .	
+ 
+   
+## Configuration
  The script look for make_args (located in project direcory) where is predefined preprocessor directives. Syntax for this file:
 <pre>
    =DIRECTIVE_NAME
@@ -49,9 +60,6 @@ Example of make_args file:
 +llibmplmpu
  </pre>
 
-Example of use: open terminal in directory, where CubeMX generated the SW4STM32 project:
-	
-	CubeMX2Makefile.py .	
 
 You can overwrtie default setting by editing local.settings file. See the local.setting file for details.
 
