@@ -25,9 +25,9 @@ mcu_cflags[re.compile('STM32F0')] = '-mthumb -mcpu=cortex-m0'
 mcu_cflags[re.compile('STM32L0')] = '-mthumb -mcpu=cortex-m0plus'
 mcu_cflags[re.compile('STM32(F|L)1')] = '-mthumb -mcpu=cortex-m3'
 mcu_cflags[re.compile('STM32(F|L)2')] = '-mthumb -mcpu=cortex-m3'
-mcu_cflags[re.compile('STM32(F|L)3')] = '-mthumb -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=softfp'
-mcu_cflags[re.compile('STM32(F|L)4')] = '-mthumb -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=softfp'
-mcu_cflags[re.compile('STM32(F|L)7')] = '-mthumb -mcpu=cortex-m7 -mfpu=fpv5-sp-d16 -mfloat-abi=softfp'
+mcu_cflags[re.compile('STM32(F|L)3')] = '-mthumb -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard'
+mcu_cflags[re.compile('STM32(F|L)4')] = '-mthumb -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard'
+mcu_cflags[re.compile('STM32(F|L)7')] = '-mthumb -mcpu=cortex-m7 -mfpu=fpv5-sp-d16 -mfloat-abi=hard'
 
 workdir =  os.path.dirname(os.path.realpath(__file__))
 file_local_settings =workdir+"/local.settings"
